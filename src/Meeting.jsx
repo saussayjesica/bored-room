@@ -6,6 +6,11 @@ import Video from "./Video";
 import { members, REPORT } from "./constants";
 
 const Button = styled.button``;
+const Spinner = styled.img`
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+`;
 
 class Meeting extends Component {
   state = {
@@ -75,7 +80,7 @@ class Meeting extends Component {
     return (
       <div>
         {loading ? (
-          <div>...loading</div>
+          <Spinner src="gifs/Spinner.gif" alt="loading" />
         ) : (
           <div>
             <Video
