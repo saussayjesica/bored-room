@@ -9,7 +9,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.0",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "victory": "^32.3.6"
   },
   "main": "public/electron.js",
   "homepage": "./",

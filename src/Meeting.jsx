@@ -83,9 +83,7 @@ class Meeting extends Component {
   state = {
     labeledFaceDescriptors: [],
     loading: false,
-    attendeeData: [],
-    meetingStatus: "",
-    meetingData: []
+    meetingStatus: ""
   };
 
   // create reference descriptors from reference images in the public folder
@@ -118,11 +116,12 @@ class Meeting extends Component {
   }
 
   handleOnMatch = matches => {
-    const { attendeeData, meetingStatus, meetingData } = this.state;
+    const { meetingStatus } = this.state;
     var expressions = matches.reduce(function(prev, curr) {
-      for (var p in curr.expressions) {
-        if (p === "asSortedArray") return prev;
-        prev[p] = (prev[p] || 0) + curr.expressions[p];
+      for (var expression in curr.expressions) {
+        if (expression === "asSortedArray") return prev;
+        prev[expression] =
+          (prev[expression] || 0) + curr.expressions[expression];
       }
       return prev;
     }, {});
@@ -137,43 +136,15 @@ class Meeting extends Component {
       synth.speak(utterThis);
     }
     this.setState({
-      meetingStatus: maxEmotion,
-      meetingData: [...meetingData, { status: maxEmotion, date: new Date() }]
+      meetingStatus: maxEmotion
     });
 
-    matches.forEach(match => {
-      if (match._label === "unknown") return;
-
-      const existingAttendee = attendeeData.filter(
-        attendee => attendee.label === match._label
-      );
-
-      if (existingAttendee.length) {
-        const newState = attendeeData.filter(
-          attendee => attendee.label !== existingAttendee[0].label
-        );
-
-        const newData = {
-          label: match._label,
-          data: [...existingAttendee[0].data, match]
-        };
-
-        this.setState({ attendeeData: [...newState, newData] });
-      } else {
-        const newAttendee = { label: match._label, data: [match] };
-        this.setState({ attendeeData: [...attendeeData, newAttendee] });
-      }
-    });
+    this.props.handleMatch(matches, maxEmotion);
   };
 
   render() {
-    const { goToNextPage } = this.props;
-    const {
-      loading,
-      labeledFaceDescriptors,
-      meetingStatus,
-      attendeeData
-    } = this.state;
+    const { goToNextPage, attendeeData } = this.props;
+    const { loading, labeledFaceDescriptors, meetingStatus } = this.state;
 
     return (
       <div>
