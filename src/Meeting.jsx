@@ -6,6 +6,13 @@ import Video from "./Video";
 import { members, REPORT } from "./constants";
 
 const Button = styled.button``;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: -webkit-fill-available;
+`;
 const Spinner = styled.img`
   width: 100px;
   height: 100px;
@@ -80,7 +87,9 @@ class Meeting extends Component {
     return (
       <div>
         {loading ? (
-          <Spinner src="gifs/Spinner.gif" alt="loading" />
+          <Container>
+            <Spinner src="gifs/Spinner.gif" alt="loading" />
+          </Container>
         ) : (
           <div>
             <Video
