@@ -1,46 +1,21 @@
-import React, { useEffect, useState } from "react";
-import * as faceapi from "face-api.js";
-import { setUp } from "./utils";
-import Video from "./Video";
-
-const members = ["jes", "mahsa"];
+import React from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Meeting from "./Meeting";
 
 function App() {
-  const [labeledFaceDescriptors, setLabeledFaceDescriptors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  return (
+    <Router>
+      <Route exact path="/" component={Home} />
+      <Route path="/meeting" component={Meeting} />
+      {/* <Route path="/report" component={Report} /> */}
+    </Router>
+  );
+}
 
-  // create reference descriptors from reference images in the public folder
-  async function getReferenceImages() {
-    const membersArray = members.map(async member => {
-      const imgUrl = `images/${member}.jpg`;
-      const img = await faceapi.fetchImage(imgUrl);
-      const fullFaceDescription = await faceapi
-        .detectSingleFace(img)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!fullFaceDescription) {
-        throw new Error(`no faces detected for ${member}`);
-      }
-
-      const faceDescriptors = [fullFaceDescription.descriptor];
-      return new faceapi.LabeledFaceDescriptors(member, faceDescriptors);
-    });
-    const users = await Promise.all(membersArray);
-    setLabeledFaceDescriptors(users);
-  }
-
-  useEffect(() => {
-    setUp().then(() => getReferenceImages().then(() => setLoading(false)));
-  }, []);
-
+function Home() {
   return (
     <div>
-      {loading ? (
-        <div>...loading</div>
-      ) : (
-        <Video labeledFaceDescriptors={labeledFaceDescriptors} />
-      )}
+      <Link to="/meeting">Meeting</Link>
     </div>
   );
 }
