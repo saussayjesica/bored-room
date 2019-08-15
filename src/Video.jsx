@@ -46,7 +46,7 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
     console.log("no matches");
   }
   if (results) {
-    results.forEach((bestMatch, i) => {
+    results.forEach(bestMatch => {
       onMatch(bestMatch);
     });
   }

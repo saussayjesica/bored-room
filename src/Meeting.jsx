@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component } from "react";
 import * as faceapi from "face-api.js";
 import styled from "styled-components";
 import { setUp } from "./utils";
@@ -7,15 +7,15 @@ import { members, REPORT } from "./constants";
 
 const Button = styled.button``;
 
-function Meeting(props) {
-  const { goToNextPage } = props;
-
-  const [labeledFaceDescriptors, setLabeledFaceDescriptors] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [attendees, setAttendees] = useState([]);
+class Meeting extends Component {
+  state = {
+    labeledFaceDescriptors: [],
+    loading: false,
+    attendees: []
+  };
 
   // create reference descriptors from reference images in the public folder
-  async function getReferenceImages() {
+  getReferenceImages = async () => {
     const membersArray = members.map(async member => {
       const imgUrl = `images/${member}.jpg`;
       const img = await faceapi.fetchImage(imgUrl);
@@ -32,41 +32,62 @@ function Meeting(props) {
       return new faceapi.LabeledFaceDescriptors(member, faceDescriptors);
     });
     const users = await Promise.all(membersArray);
-    setLabeledFaceDescriptors(users);
+    console.log("here");
+    this.setState({ labeledFaceDescriptors: users });
+  };
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    setUp().then(() =>
+      this.getReferenceImages().then(() => this.setState({ loading: false }))
+    );
   }
 
-  useEffect(() => {
-    setLoading(true);
-    setUp().then(() => getReferenceImages().then(() => setLoading(false)));
-  }, []);
-
-  const handleOnMatch = match => {
+  handleOnMatch = match => {
+    const { attendees } = this.state;
     if (match._label === "unknown") return;
-    // if (attendees) {
-    //   const updatedValues = { ...attendees[match._label], ...match };
-    //   console.log("UPDATED", updatedValues);
-    // }
-    const test = { [match._label]: match };
-    const newAttendees = attendees.concat(test);
-    setAttendees(newAttendees);
-  };
-  console.log(attendees);
 
-  return (
-    <div>
-      {loading ? (
-        <div>...loading</div>
-      ) : (
-        <div>
-          <Video
-            labeledFaceDescriptors={labeledFaceDescriptors}
-            onMatch={handleOnMatch}
-          />
-          <Button onClick={() => goToNextPage(REPORT)}>Finish Meeting</Button>
-        </div>
-      )}
-    </div>
-  );
+    const existingAttendee = attendees.filter(
+      attendee => attendee.label === match._label
+    );
+
+    if (existingAttendee.length) {
+      const newState = attendees.filter(
+        attendee => attendee.label !== existingAttendee[0].label
+      );
+
+      const newData = {
+        label: match._label,
+        data: [...existingAttendee[0].data, match]
+      };
+
+      this.setState({ attendees: [...newState, newData] });
+    } else {
+      const newAttendee = { label: match._label, data: [match] };
+      this.setState({ attendees: [...attendees, newAttendee] });
+    }
+  };
+
+  render() {
+    const { goToNextPage } = this.props;
+    const { loading, labeledFaceDescriptors, attendees } = this.state;
+    console.log(attendees);
+    return (
+      <div>
+        {loading ? (
+          <div>...loading</div>
+        ) : (
+          <div>
+            <Video
+              labeledFaceDescriptors={labeledFaceDescriptors}
+              onMatch={this.handleOnMatch}
+            />
+            <Button onClick={() => goToNextPage(REPORT)}>Finish Meeting</Button>
+          </div>
+        )}
+      </div>
+    );
+  }
 }
 
 export default Meeting;
