@@ -79,6 +79,13 @@ const Attendees = styled.div`
   align-items: center;
 `;
 
+const Record = styled.img`
+  position: absolute;
+  right: 0;
+  width: 300px;
+  top: -60px;
+`;
+
 class Meeting extends Component {
   state = {
     labeledFaceDescriptors: [],
@@ -164,6 +171,7 @@ class Meeting extends Component {
                 labeledFaceDescriptors={labeledFaceDescriptors}
                 onMatch={this.handleOnMatch}
               />
+              <Record src="gifs/record.gif" alt="Recording" />
             </VideoContainer>
             <FooterContainer>
               <Attendees>
