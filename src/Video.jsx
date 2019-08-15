@@ -4,8 +4,9 @@ import { requestWebCamAcess } from "./utils";
 
 const WIDTH = 720;
 const HEIGHT = 576;
+const FREQUENCY = 5000;
 
-async function onPlay(videoEl, labeledFaceDescriptors) {
+async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
   const displaySize = {
     width: 720,
     height: 576
@@ -22,7 +23,10 @@ async function onPlay(videoEl, labeledFaceDescriptors) {
   const resizedDetections = faceapi.resizeResults(detections, displaySize);
   if (!detections.length) {
     console.log("no faces detected");
-    setTimeout(() => onPlay(videoEl, labeledFaceDescriptors), 500);
+    setTimeout(
+      () => onPlay(videoEl, labeledFaceDescriptors, onMatch),
+      FREQUENCY
+    );
     return;
   }
 
@@ -33,6 +37,7 @@ async function onPlay(videoEl, labeledFaceDescriptors) {
   const results = resizedDetections.map(detection => {
     return {
       ...faceMatcher.findBestMatch(detection.descriptor),
+      date: new Date(),
       expressions: detection.expressions
     };
   });
@@ -41,16 +46,15 @@ async function onPlay(videoEl, labeledFaceDescriptors) {
     console.log("no matches");
   }
   if (results) {
-    console.log("match---------", results);
     results.forEach((bestMatch, i) => {
-      console.log("bestMatch--------", bestMatch);
+      onMatch(bestMatch);
     });
   }
-  setTimeout(() => onPlay(videoEl, labeledFaceDescriptors), 500);
+  setTimeout(() => onPlay(videoEl, labeledFaceDescriptors, onMatch), FREQUENCY);
 }
 
 function Video(props) {
-  const { labeledFaceDescriptors } = props;
+  const { labeledFaceDescriptors, onMatch } = props;
   const videoEl = useRef(null);
 
   useEffect(() => {
@@ -58,7 +62,7 @@ function Video(props) {
     onPlay(videoEl, labeledFaceDescriptors);
   }, [labeledFaceDescriptors]);
 
-  const handlePlay = () => onPlay(videoEl, labeledFaceDescriptors);
+  const handlePlay = () => onPlay(videoEl, labeledFaceDescriptors, onMatch);
 
   return (
     <Fragment>

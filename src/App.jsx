@@ -1,23 +1,23 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import React, { useState } from "react";
+import Home from "./Home";
 import Meeting from "./Meeting";
+import Report from "./Report";
+import { HOME, MEETING, REPORT } from "./constants";
 
 function App() {
-  return (
-    <Router>
-      <Route exact path="/" component={Home} />
-      <Route path="/meeting" component={Meeting} />
-      {/* <Route path="/report" component={Report} /> */}
-    </Router>
-  );
-}
+  const [currentPage, setCurrentPage] = useState(HOME);
 
-function Home() {
-  return (
-    <div>
-      <Link to="/meeting">Meeting</Link>
-    </div>
-  );
+  const handlePageChange = nextPage => {
+    setCurrentPage(nextPage);
+  };
+
+  const pages = {
+    [HOME]: <Home goToNextPage={handlePageChange} />,
+    [MEETING]: <Meeting goToNextPage={handlePageChange} />,
+    [REPORT]: <Report goToNextPage={handlePageChange} />
+  };
+
+  return pages[currentPage];
 }
 
 export default App;
