@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, Fragment } from "react";
 import * as faceapi from "face-api.js";
 import { requestWebCamAcess } from "./utils";
+import styled from "styled-components";
 
-const WIDTH = 720;
-const HEIGHT = 576;
 const FREQUENCY = 5000;
 
-async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
-  const displaySize = {
-    width: 720,
-    height: 576
-  };
+const StyledVideo = styled.video`
+  object-fit: cover;
+  width: 100%
+  height: 100%;
+`;
 
+async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
   // detect faces from the webcam
   const detections = await faceapi
     .detectAllFaces(videoEl.current, new faceapi.TinyFaceDetectorOptions())
@@ -20,7 +20,7 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
     .withFaceDescriptors();
 
   // resize the detected boxes and landmarks in case your displayed image has a different size than the original
-  const resizedDetections = faceapi.resizeResults(detections, displaySize);
+  //   const resizedDetections = faceapi.resizeResults(detections, displaySize);
   if (!detections.length) {
     console.log("no faces detected");
     setTimeout(
@@ -34,7 +34,7 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
 
   // compare webcam detections to reference descriptors
-  const results = resizedDetections.map(detection => {
+  const results = detections.map(detection => {
     return {
       ...faceMatcher.findBestMatch(detection.descriptor),
       date: new Date(),
@@ -46,9 +46,7 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
     console.log("no matches");
   }
   if (results) {
-    results.forEach(bestMatch => {
-      onMatch(bestMatch);
-    });
+    onMatch(results);
   }
   setTimeout(() => onPlay(videoEl, labeledFaceDescriptors, onMatch), FREQUENCY);
 }
@@ -66,14 +64,7 @@ function Video(props) {
 
   return (
     <Fragment>
-      <video
-        width={WIDTH}
-        height={HEIGHT}
-        autoPlay
-        muted
-        ref={videoEl}
-        onLoadedMetadata={handlePlay}
-      />
+      <StyledVideo autoPlay muted ref={videoEl} onLoadedMetadata={handlePlay} />
     </Fragment>
   );
 }
