@@ -5,14 +5,11 @@ import { requestWebCamAcess } from "./utils";
 const WIDTH = 720;
 const HEIGHT = 576;
 
-async function onPlay(videoEl, canvasEl, labeledFaceDescriptors) {
+async function onPlay(videoEl, labeledFaceDescriptors) {
   const displaySize = {
     width: 720,
     height: 576
   };
-
-  // resize the overlay canvas to the input dimensions
-  faceapi.matchDimensions(canvasEl.current, displaySize, true);
 
   // detect faces from the webcam
   const detections = await faceapi
@@ -25,7 +22,7 @@ async function onPlay(videoEl, canvasEl, labeledFaceDescriptors) {
   const resizedDetections = faceapi.resizeResults(detections, displaySize);
   if (!detections.length) {
     console.log("no faces detected");
-    setTimeout(() => onPlay(videoEl, canvasEl, labeledFaceDescriptors), 500);
+    setTimeout(() => onPlay(videoEl, labeledFaceDescriptors), 500);
     return;
   }
 
@@ -49,20 +46,19 @@ async function onPlay(videoEl, canvasEl, labeledFaceDescriptors) {
       console.log("bestMatch--------", bestMatch);
     });
   }
-  setTimeout(() => onPlay(videoEl, canvasEl, labeledFaceDescriptors), 500);
+  setTimeout(() => onPlay(videoEl, labeledFaceDescriptors), 500);
 }
 
 function Video(props) {
   const { labeledFaceDescriptors } = props;
   const videoEl = useRef(null);
-  const canvasEl = useRef(null);
 
   useEffect(() => {
     requestWebCamAcess(videoEl);
-    onPlay(videoEl, canvasEl, labeledFaceDescriptors);
+    onPlay(videoEl, labeledFaceDescriptors);
   }, [labeledFaceDescriptors]);
 
-  const handlePlay = () => onPlay(videoEl, canvasEl, labeledFaceDescriptors);
+  const handlePlay = () => onPlay(videoEl, labeledFaceDescriptors);
 
   return (
     <Fragment>
@@ -73,11 +69,6 @@ function Video(props) {
         muted
         ref={videoEl}
         onLoadedMetadata={handlePlay}
-      />
-      <canvas
-        style={{ position: "absolute", top: "0", left: "0" }}
-        id="canvas"
-        ref={canvasEl}
       />
     </Fragment>
   );
