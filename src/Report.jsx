@@ -9,9 +9,9 @@ import {
 } from "victory";
 
 function Report(props) {
-  const { goToNextPage } = props;
-
-  return <div>REPORT</div>;
+  const { goToNextPage, meetingData } = props;
+  console.log(meetingData);
+  return <div></div>;
 }
 
 export default Report;

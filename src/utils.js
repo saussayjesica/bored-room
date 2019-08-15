@@ -9,6 +9,15 @@ export function requestWebCamAcess(videoEl) {
   }
 }
 
+export function rcancelWebCamAcess(videoEl) {
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices
+      .getUserMedia({ video: {} })
+      .then(stream => (videoEl.current.srcObject = stream))
+      .catch(err => console.log(err.name + ": " + err.message));
+  }
+}
+
 export async function setUp() {
   await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
   await faceapi.nets.faceLandmark68Net.loadFromUri("/models");

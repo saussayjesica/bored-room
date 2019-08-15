@@ -11,8 +11,14 @@ const StyledVideo = styled.video`
   height: 100%;
 `;
 
+const delayedPlay = (videoEl, labeledFaceDescriptors, onMatch) =>
+  setTimeout(() => onPlay(videoEl, labeledFaceDescriptors, onMatch), FREQUENCY);
+
 async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
+  if (!videoEl.current) return;
   // detect faces from the webcam
+
+  console.log("hhhheerrerrererre", videoEl);
   const detections = await faceapi
     .detectAllFaces(videoEl.current, new faceapi.TinyFaceDetectorOptions())
     .withFaceLandmarks()
@@ -23,10 +29,7 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
   //   const resizedDetections = faceapi.resizeResults(detections, displaySize);
   if (!detections.length) {
     console.log("no faces detected");
-    setTimeout(
-      () => onPlay(videoEl, labeledFaceDescriptors, onMatch),
-      FREQUENCY
-    );
+    delayedPlay(videoEl, labeledFaceDescriptors, onMatch);
     return;
   }
 
@@ -48,7 +51,8 @@ async function onPlay(videoEl, labeledFaceDescriptors, onMatch) {
   if (results) {
     onMatch(results);
   }
-  setTimeout(() => onPlay(videoEl, labeledFaceDescriptors, onMatch), FREQUENCY);
+
+  delayedPlay(videoEl, labeledFaceDescriptors, onMatch);
 }
 
 function Video(props) {

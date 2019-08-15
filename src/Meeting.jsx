@@ -104,7 +104,6 @@ class Meeting extends Component {
       return new faceapi.LabeledFaceDescriptors(member, faceDescriptors);
     });
     const users = await Promise.all(membersArray);
-
     this.setState({ labeledFaceDescriptors: users });
   };
 
@@ -172,7 +171,11 @@ class Meeting extends Component {
                   <Avatar src={`images/${attendee.label}.jpg`} />
                 ))}
               </Attendees>
-              <Button onClick={() => goToNextPage(REPORT)}>
+              <Button
+                onClick={() => {
+                  goToNextPage(REPORT);
+                }}
+              >
                 Finish Meeting
               </Button>
             </FooterContainer>
