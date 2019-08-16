@@ -30,7 +30,31 @@ const Results = styled.div`
 const Emotion = styled.div``;
 
 function Report(props) {
-  const { goToNextPage, attendeeData } = props;
+  const { goToNextPage, attendeeData, meetingData } = props;
+
+  const meetingEmotions = {
+    happy: 0,
+    surprised: 0,
+    neutral: 0,
+    fearful: 0,
+    disgusted: 0,
+    sad: 0,
+    angry: 0
+  };
+
+  meetingData.forEach(result => {
+    const status = result.status;
+    meetingEmotions[status] = meetingEmotions[status] + 1;
+  });
+
+  const meetingEmotionTotal = Object.values(meetingEmotions).reduce(
+    (a, b) => a + b
+  );
+
+  const meetingEmotionPercentages = Object.keys(meetingEmotions).map(key => ({
+    [key]: Math.round((100 / meetingEmotionTotal) * meetingEmotions[key])
+  }));
+  console.log(meetingEmotionPercentages);
 
   const attendeeSummary = attendeeData.map(attendee => {
     var expressions = attendee.data.reduce(function(prev, curr) {

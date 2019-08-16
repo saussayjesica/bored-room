@@ -38,9 +38,9 @@ export const members = [
 export const feedback = {
   happy: "tell us more",
   neutral: "i hope this meeting improves",
-  sad: "this meeting is boring everyone to tears",
-  surprised: "test",
-  fearful: "test",
-  disgusted: "test",
-  angry: "test"
+  sad: "this meeting is boring everyone to tears, abort",
+  surprised: "oh gosh you surprised me",
+  fearful: "whoops",
+  disgusted: "yuck make it stop",
+  angry: "you better check your fucking attitude at the door"
 };
