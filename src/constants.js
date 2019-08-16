@@ -9,7 +9,6 @@ export const members = [
   "alf",
   "andy",
   "angus",
-  "benBrown",
   "benDrew",
   "chantelle",
   "coops",
@@ -38,7 +37,7 @@ export const members = [
 export const feedback = {
   happy: "tell us more",
   neutral: "i hope this meeting improves",
-  sad: "this meeting is boring everyone to tears",
+  sad: "this meeting is boring everyone to tears, abort",
   surprised: "oh gosh you surprised me",
   fearful: "whoops",
   disgusted: "yuck make it stop",
