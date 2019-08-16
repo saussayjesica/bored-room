@@ -1,14 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { VictoryChart, VictoryBar, VictoryTheme, VictoryAxis } from "victory";
+import { HOME } from "./constants";
 
 const ResultsContainer = styled.div`
   display: grid;
-  align-items: center;
-  justify-items: center;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 5px;
-  margin: 20px;
+  margin: 50px;
 `;
 
 const Avatar = styled.div`
@@ -33,14 +32,38 @@ const Title = styled.h1`
   font-family: "Nunito";
 `;
 
-const StyledVictoryChart = styled(VictoryChart)`
-  > svg {
-    margin-left: 50px;
+const Overall = styled.div`
+  width: 400px;
+  margin-left: 50px;
+`;
+
+const Button = styled.button`
+  width: 250px;
+  height: 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: #14e28f;
+  color: black;
+  font-size: 14px;
+  font-family: "Nunito";
+  border: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 10px;
+  &: hover {
+    background-color: #00ff98;
   }
 `;
 
+const ButtonContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 20px;
+`;
+
 function Report(props) {
-  const { attendeeData, meetingData } = props;
+  const { goToNextPage, attendeeData, meetingData } = props;
 
   const meetingEmotions = {
     happy: 0,
@@ -85,21 +108,27 @@ function Report(props) {
 
   return (
     <div>
+      <ButtonContainer>
+        <Button>Download Meeting</Button>
+        <Button onClick={() => goToNextPage(HOME)}>Home</Button>
+      </ButtonContainer>
       <Title>Overall Results</Title>
-      <StyledVictoryChart
-        domainPadding={5}
-        theme={VictoryTheme.material}
-        horizontal
-      >
-        <VictoryAxis
-          tickValues={[1, 2, 3, 4, 5, 6, 7]}
-          tickFormat={meetingEmotionPercentages.map(
-            expression => expression.emotion
-          )}
-        />
-        <VictoryAxis dependentAxis tickFormat={y => `${y}%`} />
-        <VictoryBar data={meetingEmotionPercentages} x="emotion" y="value" />
-      </StyledVictoryChart>
+      <Overall>
+        <VictoryChart
+          domainPadding={5}
+          theme={VictoryTheme.material}
+          horizontal
+        >
+          <VictoryAxis
+            tickValues={[1, 2, 3, 4, 5, 6, 7]}
+            tickFormat={meetingEmotionPercentages.map(
+              expression => expression.emotion
+            )}
+          />
+          <VictoryAxis dependentAxis tickFormat={y => `${y}%`} />
+          <VictoryBar data={meetingEmotionPercentages} x="emotion" y="value" />
+        </VictoryChart>
+      </Overall>
       <Title>Attendee Results</Title>
       <ResultsContainer>
         {attendeeSummary &&
