@@ -1,10 +1,6 @@
 import React from "react";
-import styled, { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import { MEETING } from "./constants";
-
-const GlobalStyles = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css?family=Nunito&display=swap')
-`;
 
 const Container = styled.div`
   display: flex;
@@ -49,7 +45,6 @@ function Home(props) {
 
   return (
     <Container>
-      <GlobalStyles />
       <Logo src="icons/boredRoomLogo.svg" alt="Bored Room Logo" />
       <Button onClick={() => goToNextPage(MEETING)}>Start Meeting</Button>
       <Footer>Copyright © 2019 JESTHMOSA All Rights Reserved</Footer>
