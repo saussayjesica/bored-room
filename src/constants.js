@@ -23,7 +23,6 @@ export const members = [
   "james",
   "jonnie",
   "kateryna",
-  "keat",
   "laura",
   "linh",
   "mamo",
